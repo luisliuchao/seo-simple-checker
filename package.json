@@ -4,7 +4,7 @@
   "description": "Simple HTML SEO rules checker",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha test/seo-checker-test --compilers js:babel-core/register"
   },
   "keywords": [
     "seo",
@@ -14,8 +14,16 @@
   "author": "Liu Chao",
   "license": "ISC",
   "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-preset-env": "^1.7.0",
     "eslint": "^5.0.0",
     "eslint-config-airbnb-base": "^13.0.0",
-    "eslint-plugin-import": "^2.13.0"
+    "eslint-plugin-import": "^2.13.0",
+    "mocha": "^5.2.0"
+  },
+  "babel": {
+    "presets": [
+      "env"
+    ]
   }
 }

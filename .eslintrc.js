@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   root: true,
   parserOptions: {
     ecmaVersion: 2017,
@@ -22,5 +22,9 @@ module.exports = {
     browser: true,
     es6: true,
     node: true,
+  },
+  globals: {
+    describe: true,
+    it: true,
   },
 };
