@@ -1,0 +1,16 @@
+{
+  "name": "seo-checker",
+  "version": "1.0.0",
+  "description": "Simple HTML SEO rules checker",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "seo",
+    "seo",
+    "checker"
+  ],
+  "author": "Liu Chao",
+  "license": "ISC"
+}
