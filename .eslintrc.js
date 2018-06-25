@@ -1,4 +1,4 @@
-export default {
+module.exports = {
   root: true,
   parserOptions: {
     ecmaVersion: 2017,
