@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "yarn test && webpack --mode development",
     "prod": "yarn test && webpack --mode production",
-    "test": "mocha test/seo-checker-test --compilers js:babel-core/register"
+    "test": "mocha test/* --compilers js:babel-core/register"
   },
   "keywords": [
     "seo",
