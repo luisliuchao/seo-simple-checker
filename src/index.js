@@ -1,4 +1,4 @@
-import { readFile } from 'fs';
+import { readFile, writeFile } from 'fs';
 import { load as cheerioLoad } from 'cheerio';
 import _every from 'lodash.every';
 import defaultRules from '../.seorc';
@@ -113,7 +113,20 @@ const SEOChecker = (() => {
     });
   };
 
-  const run = (inputFile, rules) => {
+  const saveFile = (path, results) => {
+    return new Promise((resolve, reject) => {
+      writeFile(path, results, (err) => {
+        if (err) {
+          console.log('err', err);
+          reject(new Error('Failed to write results to output file'));
+        } else {
+          resolve('The results are written to output file successfully');
+        }
+      });
+    });
+  };
+
+  const run = (inputFile, rules, outputFile) => {
     if (!inputFile) {
       return new Promise((resolve, reject) => {
         reject(new Error('The input html file is required'));
@@ -123,11 +136,15 @@ const SEOChecker = (() => {
     return loadFile(inputFile).then((data) => {
       const ruleResolvers = loadRules(_rules);
       const $ = cheerioLoad(data);
-      return ruleResolvers
+      const results = ruleResolvers
         .map((resolver) => {
           return resolver.validate($);
         })
         .join('\n');
+      if (!outputFile) {
+        return results;
+      }
+      return saveFile(outputFile, results);
     });
   };
 

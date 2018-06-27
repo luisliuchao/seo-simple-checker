@@ -3,7 +3,9 @@ import { join } from 'path';
 import seoChecker from '../src/index';
 
 const InputFile = 'index.html';
+const OutputFile = 'output.txt';
 const InputFilePath = join(__dirname, InputFile);
+const OutputFilePath = join(__dirname, OutputFile);
 
 const RULES = {
   img: {
@@ -70,6 +72,36 @@ const RULES = {
     error: 'This HTML has more than 1 <h1> tag',
   },
 };
+
+describe('It reads the html file correctly', function() {
+  it('requires a html file to be specified', function(done) {
+    seoChecker
+      .run()
+      .catch((e) => {
+        assert.equal(
+          e.message,
+          'The input html file is required',
+          'It should require the input html file',
+        );
+        done();
+      })
+      .catch(done);
+  });
+
+  it('throws error when failing to read input file', function(done) {
+    seoChecker
+      .run('non-existing.txt')
+      .catch((e) => {
+        assert.equal(
+          e.message,
+          'Failed to read input data from non-existing.txt',
+          'It should show error when failing to read input file',
+        );
+        done();
+      })
+      .catch(done);
+  });
+});
 
 describe('It checks each rule correctly', function() {
   it('detects the missing of attr attribute in <img> tag', function(done) {
@@ -240,6 +272,24 @@ describe('It checks multiple rules together correctly', function() {
           result,
           keys.map(key => RULES[key].error).join('\n'),
           'It should find all the errors correctly',
+        );
+        done();
+      })
+      .catch(done);
+  });
+});
+
+describe('It output results correctly', function() {
+  it('saves results to file when output file exisits', function(done) {
+    const keys = Object.keys(RULES);
+    const rules = keys.map(key => RULES[key].rule);
+    seoChecker
+      .run(InputFilePath, rules, OutputFilePath)
+      .then((result) => {
+        assert.equal(
+          result,
+          'The results are written to output file successfully',
+          'It should save to output file successfully',
         );
         done();
       })
