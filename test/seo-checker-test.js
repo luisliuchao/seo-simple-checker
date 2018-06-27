@@ -71,7 +71,7 @@ const RULES = {
   },
 };
 
-describe('It checks the SEO rules correctly', function() {
+describe('It checks each rule correctly', function() {
   it('detects the missing of attr attribute in <img> tag', function(done) {
     const { img } = RULES;
     const rules = [img.rule];
@@ -159,6 +159,88 @@ describe('It checks the SEO rules correctly', function() {
       .run(InputFilePath, rules)
       .then((result) => {
         assert.equal(result, h1.error, 'It should find more than 1 <h1> tag');
+        done();
+      })
+      .catch(done);
+  });
+});
+
+describe('It checks multiple rules together correctly', function() {
+  it('detects the missing of attr attribute in <img> tag and href attribute in <a> tag', function(done) {
+    const { img, a } = RULES;
+    const rules = [img.rule, a.rule];
+    seoChecker
+      .run(InputFilePath, rules)
+      .then((result) => {
+        assert.equal(
+          result,
+          [img.error, a.error].join('\n'),
+          'It should find one <img> tag without attr attribute and one <a> tag without href attribute',
+        );
+        done();
+      })
+      .catch(done);
+  });
+
+  it('detects the missing of attr attribute in <img> tag and missing of <title> tag', function(done) {
+    const { img, title } = RULES;
+    const rules = [img.rule, title.rule];
+    seoChecker
+      .run(InputFilePath, rules)
+      .then((result) => {
+        assert.equal(
+          result,
+          [img.error, title.error].join('\n'),
+          'It should find one <img> tag without attr attribute and missing of <title> tag in head',
+        );
+        done();
+      })
+      .catch(done);
+  });
+
+  it('detects the missing of attr attribute in <img> tag and missing of <meta name="description"> tag', function(done) {
+    const { img, description } = RULES;
+    const rules = [img.rule, description.rule];
+    seoChecker
+      .run(InputFilePath, rules)
+      .then((result) => {
+        assert.equal(
+          result,
+          [img.error, description.error].join('\n'),
+          'It should find one <img> tag without attr attribute and missing of <meta name="description"> tag in head',
+        );
+        done();
+      })
+      .catch(done);
+  });
+
+  it('detects the missing of attr attribute in <img> tag and more than three <strong> tag', function(done) {
+    const { img, strong } = RULES;
+    const rules = [img.rule, strong.rule];
+    seoChecker
+      .run(InputFilePath, rules)
+      .then((result) => {
+        assert.equal(
+          result,
+          [img.error, strong.error].join('\n'),
+          'It should find one <img> tag without attr attribute and more than three <strong> tag',
+        );
+        done();
+      })
+      .catch(done);
+  });
+
+  it('detects all the errors correctly', function(done) {
+    const keys = Object.keys(RULES);
+    const rules = keys.map(key => RULES[key].rule);
+    seoChecker
+      .run(InputFilePath, rules)
+      .then((result) => {
+        assert.equal(
+          result,
+          keys.map(key => RULES[key].error).join('\n'),
+          'It should find all the errors correctly',
+        );
         done();
       })
       .catch(done);
