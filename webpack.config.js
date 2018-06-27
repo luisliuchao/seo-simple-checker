@@ -17,6 +17,7 @@ if (isProduction) {
 
 const config = {
   entry: `${__dirname}/src/index.js`,
+  target: 'node',
   devtool: isProduction ? false : 'source-map',
   output: {
     path: `${__dirname}/lib`,

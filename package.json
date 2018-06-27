@@ -2,7 +2,7 @@
   "name": "seo-checker",
   "version": "1.0.0",
   "description": "Simple HTML SEO rules checker",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "dev": "yarn test && webpack --mode development",
     "prod": "yarn test && webpack --mode production",
@@ -36,6 +36,12 @@
   },
   "dependencies": {
     "cheerio": "^1.0.0-rc.2",
+    "co": "^4.6.0",
+    "co-prompt": "^1.0.0",
+    "commander": "^2.15.1",
     "lodash.every": "^4.6.0"
+  },
+  "bin": {
+    "seo-checker": "bin/cli.js"
   }
 }

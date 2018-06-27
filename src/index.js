@@ -113,9 +113,15 @@ const SEOChecker = (() => {
     });
   };
 
-  const run = (inputFile, rules = defaultRules) => {
+  const run = (inputFile, rules) => {
+    if (!inputFile) {
+      return new Promise((resolve, reject) => {
+        reject(new Error('The input html file is required'));
+      });
+    }
+    const _rules = rules || defaultRules;
     return loadFile(inputFile).then((data) => {
-      const ruleResolvers = loadRules(rules);
+      const ruleResolvers = loadRules(_rules);
       const $ = cheerioLoad(data);
       return ruleResolvers
         .map((resolver) => {
