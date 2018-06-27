@@ -1,5 +1,4 @@
 import { readFile } from 'fs';
-import { join } from 'path';
 import { load as cheerioLoad } from 'cheerio';
 import _every from 'lodash.every';
 import defaultRules from '../.seorc';
@@ -14,7 +13,7 @@ class RuleAll {
     const tagText = tag.split(' ').pop();
     const attrs = rule.all;
     const $items = $(tag);
-    const matchedItems = $items.filter((_, $item) => {
+    const $matchedItems = $items.filter((_, $item) => {
       const { attribs = {} } = $item;
       return _every(Object.keys(attrs), (key) => {
         const value = attrs[key];
@@ -24,13 +23,11 @@ class RuleAll {
         return attribs[key] === value;
       });
     });
-    const diff = $items.length - matchedItems.length;
+    const diff = $items.length - $matchedItems.length;
     if (diff) {
-      console.warn(
-        `There ${diff > 1 ? 'are' : 'is'} ${diff} <${tagText}> without ${Object.keys(attrs).join(
-          ', ',
-        )} attribute`,
-      );
+      return `There ${diff > 1 ? 'are' : 'is'} ${diff} <${tagText}> tag without ${Object.keys(
+        attrs,
+      ).join(', ')} attribute`;
     }
   }
 }
@@ -45,7 +42,7 @@ class RuleContain {
     const tagText = tag.split(' ').pop();
     const attrs = rule.contain;
     const $items = $(tag);
-    const matchedItems = $items.filter((_, $item) => {
+    const $matchedItems = $items.filter((_, $item) => {
       const { attribs = {} } = $item;
       return _every(Object.keys(attrs), (key) => {
         const value = attrs[key];
@@ -55,12 +52,11 @@ class RuleContain {
         return attribs[key] === value;
       });
     });
-    if (!matchedItems.length) {
-      console.warn(
-        `This HTML doesn't have <${tagText} ${Object.keys(attrs)
-          .map(key => `${key}="${attrs[key]}"`)
-          .join(' ')} ... />`,
-      );
+    const { length } = !$matchedItems;
+    if (!length) {
+      return `This HTML doesn't have <${tagText} ${Object.keys(attrs)
+        .map(key => `${key}="${attrs[key]}"`)
+        .join(' ')} ... />`;
     }
   }
 }
@@ -79,28 +75,28 @@ class RuleLimit {
     const $items = $(tag);
     const { length } = $items;
     if (min && length < min) {
-      console.warn(`This HTML has less than ${min} <${tagText}> tag`);
+      return `This HTML has less than ${min} <${tagText}> tag`;
     }
     if (max && length > max) {
-      console.warn(`This HTML has more than ${max} <${tagText}> tag`);
+      return `This HTML has more than ${max} <${tagText}> tag`;
     }
   }
 }
 class RuleResolver {
-  constructor(rule) {
+  constructor(rule, ruleHandlers) {
     this.rule = rule;
-    const allRuleHandlers = [RuleAll, RuleContain, RuleLimit];
+    const allRuleHandlers = ruleHandlers || [RuleAll, RuleContain, RuleLimit];
     this.matchedRuleHandlers = allRuleHandlers.filter(handler => handler.match(this.rule));
   }
 
   validate($) {
-    this.matchedRuleHandlers.forEach(handler => handler.validate($, this.rule));
+    return this.matchedRuleHandlers.map(handler => handler.validate($, this.rule));
   }
 }
 
 const SEOChecker = (() => {
-  const loadRules = () => {
-    return defaultRules.map((rule) => {
+  const loadRules = (rules) => {
+    return rules.map((rule) => {
       return new RuleResolver(rule);
     });
   };
@@ -109,7 +105,7 @@ const SEOChecker = (() => {
     return new Promise((resolve, reject) => {
       readFile(path, (err, data) => {
         if (err) {
-          reject(new Error('Failed to read data'));
+          reject(new Error(`Failed to read input data from ${path}`));
         } else {
           resolve(data.toString().trim());
         }
@@ -117,15 +113,15 @@ const SEOChecker = (() => {
     });
   };
 
-  const run = () => {
-    const inputFile = 'index.html';
-    const inputFilePath = join(__dirname, inputFile);
-    loadFile(inputFilePath).then((data) => {
-      const ruleResolvers = loadRules();
+  const run = (inputFile, rules = defaultRules) => {
+    return loadFile(inputFile).then((data) => {
+      const ruleResolvers = loadRules(rules);
       const $ = cheerioLoad(data);
-      ruleResolvers.forEach((resolver) => {
-        resolver.validate($);
-      });
+      return ruleResolvers
+        .map((resolver) => {
+          return resolver.validate($);
+        })
+        .join('\n');
     });
   };
 
@@ -134,4 +130,7 @@ const SEOChecker = (() => {
   };
 })();
 
+export {
+  RuleAll, RuleContain, RuleLimit, RuleResolver,
+};
 export default SEOChecker;
