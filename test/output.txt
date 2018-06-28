@@ -1,0 +1,7 @@
+There is 1 <img> tag without attr attribute
+There is 1 <a> tag without href attribute
+This HTML has less than 1 <title> tag
+This HTML doesn't have <meta name="description" ... />
+This HTML doesn't have <meta name="keywords" ... />
+This HTML has more than 3 <strong> tag
+This HTML has more than 1 <h1> tag
