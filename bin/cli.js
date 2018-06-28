@@ -49,8 +49,8 @@ program
     console.log('');
     console.log('  Examples:');
     console.log('');
-    console.log('    $ seo-checker test/index.html');
-    console.log('    $ cat test/index.html | seo-checker');
+    console.log('    $ seo-simple-checker test/index.html');
+    console.log('    $ cat test/index.html | seo-simple-checker');
     console.log('');
     console.log('  Author:');
     console.log('    Liu Chao (luis.liu.1018@gmail.com)');

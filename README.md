@@ -9,27 +9,27 @@ A simple Node.js package to let a user use this package to scan a HTML file and 
 ## Usage Globally
 
 ```bash
-  yarn global add seo-checker
+  yarn global add seo-simple-checker
 ```
 
 ### Example
 
 ```bahs
-  seo-checker --help
-  seo-checker test/index.html -o output.txt
-  cat test/index | seo-checker
+  seo-simple-checker --help
+  seo-simple-checker test/index.html -o output.txt
+  cat test/index | seo-simple-checker
 ```
 
 ## Usage Locally
 
 ```bash
-  yarn add seo-checker
+  yarn add seo-simple-checker
 ```
 
 ### Example
 
 ```js
-const seoChecker = require('seo-checker');
+const seoChecker = require('seo-simple-checker');
 
 seoChecker.run('index.html', [
   {
@@ -94,16 +94,25 @@ Example: \<strong\> appears at least 1, but no more than 3 times
 
 ### Customize Rule
 
-Example: check if \<meta `name`="`robots`"\> exisit
+```bash
+const seoChecker = require('seo-simple-checker');
 
-```js
-# add below code to .seorc.js
-{
-  tag: 'meta',
-  contain: {
-    name: 'robots'
-  }
-}
+# import all default rules
+const { defaultRules, run } = seoChecker;
+
+# add custom rules
+const customRules = [
+  {
+    tag: 'meta',
+    contain: {
+      meta: 'robots',
+    },
+  },
+];
+const rules = defaultRules.slice().concat(customRules);
+
+# run the SEO checker
+seoChecker.run('input.html', rules);
 ```
 
 ## Test

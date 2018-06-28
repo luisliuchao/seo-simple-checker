@@ -1,5 +1,5 @@
 {
-  "name": "seo-checker",
+  "name": "seo-simple-checker",
   "version": "1.0.0",
   "description": "Simple HTML SEO rules checker",
   "main": "index.js",
@@ -42,6 +42,6 @@
     "lodash.every": "^4.6.0"
   },
   "bin": {
-    "seo-checker": "bin/cli.js"
+    "seo-simple-checker": "bin/cli.js"
   }
 }
