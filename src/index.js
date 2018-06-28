@@ -1,4 +1,4 @@
-import { readFile, writeFile } from 'fs';
+import { createWriteStream, createReadStream } from 'fs';
 import { load as cheerioLoad } from 'cheerio';
 import _every from 'lodash.every';
 import defaultRules from '../.seorc';
@@ -101,51 +101,70 @@ const SEOChecker = (() => {
     });
   };
 
-  const loadFile = (path) => {
+  const loadStream = (rs, path) => {
+    let data;
+    rs.setEncoding('utf8');
     return new Promise((resolve, reject) => {
-      readFile(path, (err, data) => {
-        if (err) {
+      rs.on('readable', () => {
+        data += rs.read();
+      })
+        .on('end', () => {
+          if (!data) {
+            reject(new Error('Failed to read input data'));
+          } else {
+            resolve(data);
+          }
+        })
+        .on('error', () => {
           reject(new Error(`Failed to read input data from ${path}`));
-        } else {
-          resolve(data.toString().trim());
-        }
-      });
+        });
     });
   };
 
-  const saveFile = (path, results) => {
+  const writeStream = (ws, results) => {
     return new Promise((resolve, reject) => {
-      writeFile(path, results, (err) => {
-        if (err) {
-          console.log('err', err);
-          reject(new Error('Failed to write results to output file'));
-        } else {
-          resolve('The results are written to output file successfully');
-        }
+      ws.write(results);
+      ws.end();
+      ws.on('finish', () => {
+        resolve('The results are written to output file successfully');
+      }).on('error', function() {
+        reject(new Error('Failed to write results to output file'));
       });
     });
   };
 
-  const run = (inputFile, rules, outputFile) => {
-    if (!inputFile) {
+  const run = (input, rules, output) => {
+    if (!input) {
       return new Promise((resolve, reject) => {
         reject(new Error('The input html file is required'));
       });
     }
     const _rules = rules || defaultRules;
-    return loadFile(inputFile).then((data) => {
-      const ruleResolvers = loadRules(_rules);
-      const $ = cheerioLoad(data);
-      const results = ruleResolvers
-        .map((resolver) => {
-          return resolver.validate($);
-        })
-        .join('\n');
-      if (!outputFile) {
-        return results;
-      }
-      return saveFile(outputFile, results);
-    });
+    // let promise;
+    let rs;
+    if (typeof input === 'string') {
+      rs = createReadStream(input);
+    } else {
+      rs = input;
+    }
+    return loadStream(rs, input)
+      .then((data) => {
+        const ruleResolvers = loadRules(_rules);
+        const $ = cheerioLoad(data);
+        const results = ruleResolvers
+          .map((resolver) => {
+            return resolver.validate($);
+          })
+          .join('\n');
+        if (!output) {
+          return results;
+        }
+        const ws = createWriteStream(output);
+        return writeStream(ws, results);
+      })
+      .catch((e) => {
+        throw e;
+      });
   };
 
   return {
