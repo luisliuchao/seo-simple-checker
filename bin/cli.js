@@ -5,7 +5,7 @@ const co = require('co');
 const prompt = require('co-prompt');
 const colors = require('colors');
 
-const seoChecker = require('../lib/seo-checker.js');
+const seoChecker = require('../index.js');
 
 const showResult = (results) => {
   console.log('');
@@ -39,7 +39,7 @@ program
 
       console.log('');
       console.log('************************ SEO CHECKER ************************');
-      seoChecker.default
+      seoChecker
         .run(input, undefined, output)
         .then(showResult)
         .catch(showError);
@@ -49,8 +49,8 @@ program
     console.log('');
     console.log('  Examples:');
     console.log('');
-    console.log('    $ seo-checker test/index.html');
-    console.log('    $ cat test/index.html | seo-checker');
+    console.log('    $ seo-simple-checker test/index.html');
+    console.log('    $ cat test/index.html | seo-simple-checker');
     console.log('');
     console.log('  Author:');
     console.log('    Liu Chao (luis.liu.1018@gmail.com)');
@@ -75,7 +75,7 @@ if (!input) {
     });
     console.log('');
     console.log('************************ SEO CHECKER ************************');
-    seoChecker.default
+    seoChecker
       .run(self, undefined, program.output)
       .then(showResult)
       .catch(showError);

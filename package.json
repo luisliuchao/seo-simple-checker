@@ -1,15 +1,14 @@
 {
-  "name": "seo-checker",
-  "version": "1.0.0",
+  "name": "seo-simple-checker",
+  "version": "1.0.1",
   "description": "Simple HTML SEO rules checker",
-  "main": "src/index.js",
+  "main": "index.js",
   "scripts": {
     "dev": "yarn test && webpack --mode development",
-    "prod": "yarn test && webpack --mode production",
+    "build": "yarn test && webpack --mode production",
     "test": "mocha test/*.js --compilers js:babel-core/register"
   },
   "keywords": [
-    "seo",
     "seo",
     "checker"
   ],
@@ -43,6 +42,6 @@
     "lodash.every": "^4.6.0"
   },
   "bin": {
-    "seo-checker": "bin/cli.js"
+    "seo-simple-checker": "bin/cli.js"
   }
 }
