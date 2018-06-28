@@ -2,7 +2,7 @@
   "name": "seo-checker",
   "version": "1.0.0",
   "description": "Simple HTML SEO rules checker",
-  "main": "src/index.js",
+  "main": "index.js",
   "scripts": {
     "dev": "yarn test && webpack --mode development",
     "prod": "yarn test && webpack --mode production",
