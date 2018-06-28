@@ -1,9 +1,28 @@
+/**
+ * SEO Checker
+ * Copyright (c) 2018 Liu Chao / MIT Licensed
+ * A simple library to check basic SEO checks.
+ */
+
+// Set up requires
 import { createWriteStream, createReadStream } from 'fs';
 import { load as cheerioLoad } from 'cheerio';
 import _every from 'lodash.every';
 import defaultRules from '../.seorc';
 
+// Define Basic Rules
 class RuleAll {
+  /**
+   * Example: {
+   *  tag: 'img',
+   *  all: {
+   *    attr: '*'
+   *  }
+   * }
+   *
+   * All <img> tag has attribute attr with * for wildcard for any truty value
+   *
+   */
   static match(rule) {
     return rule.tag && rule.all;
   }
@@ -33,6 +52,17 @@ class RuleAll {
 }
 
 class RuleContain {
+  /**
+   * Example: {
+   *  tag: 'meta',
+   *  contain: {
+   *    name: 'description'
+   *  }
+   * }
+   *
+   * There exists <meta> tag with attribute name and value as description
+   *
+   */
   static match(rule) {
     return rule.tag && rule.contain;
   }
@@ -62,6 +92,18 @@ class RuleContain {
 }
 
 class RuleLimit {
+  /**
+   * Example: {
+   *  tag: 'strong',
+   *  limit: {
+   *    min: 1,
+   *    max: 3
+   *  }
+   * }
+   *
+   * There should be at least 1, but no more than 3 <strong> tag
+   *
+   */
   static match(rule) {
     return rule.tag && rule.limit;
   }
@@ -95,12 +137,26 @@ class RuleResolver {
 }
 
 const SEOChecker = (() => {
+  /**
+   * Map each rule to a RuleResolver
+   *
+   * `rules` [array] - array of rules following the specs above
+   *
+   * Returns mapping of each rule to RuleResolver
+   */
   const loadRules = (rules) => {
     return rules.map((rule) => {
       return new RuleResolver(rule);
     });
   };
 
+  /**
+   * Read data from readable stream
+   *
+   * `rs` [Node Readable Stream] - the readable stream containing html data
+   *
+   * Returns a promise and resolve the html data if exists and throws error otherwise
+   */
   const loadStream = (rs, path) => {
     let data;
     rs.setEncoding('utf8');
@@ -121,6 +177,14 @@ const SEOChecker = (() => {
     });
   };
 
+  /**
+   * Write results to writable stream
+   *
+   * `ws` [Node Writable Stream] - the writable stream
+   * `results` [string] - the results data to be saved
+   *
+   * Returns a promise and resolve successful message if finishes and throws erro otherwise
+   */
   const writeStream = (ws, results) => {
     return new Promise((resolve, reject) => {
       ws.write(results);
@@ -133,6 +197,16 @@ const SEOChecker = (() => {
     });
   };
 
+  /**
+   * The entry point for SEO checker
+   *
+   * `input` [Node Writable Stream | string] - the writable stream or input file name
+   * `rules` [array | undefined] - the rules to be used, if undefined rules are from .seorc.js
+   * `output` [string | undefine] - the output file for results to be written to
+   *
+   * Returns a promise and check the SEO rules for the input and
+   * resolve results as string if output is not specified
+   */
   const run = (input, rules, output) => {
     if (!input) {
       return new Promise((resolve, reject) => {
@@ -172,7 +246,4 @@ const SEOChecker = (() => {
   };
 })();
 
-export {
-  RuleAll, RuleContain, RuleLimit, RuleResolver,
-};
 export default SEOChecker;

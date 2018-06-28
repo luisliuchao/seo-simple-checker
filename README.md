@@ -6,10 +6,104 @@ A simple Node.js package to let a user use this package to scan a HTML file and 
 
 - yarn
 
-## Install
+## Usage Globally
+
+```bash
+  yarn global add seo-checker
+```
+
+### Example
+
+```bahs
+  seo-checker --help
+  seo-checker test/index.html -o output.txt
+  cat test/index | seo-checker
+```
+
+## Usage Locally
 
 ```bash
   yarn add seo-checker
+```
+
+### Example
+
+```js
+const seoChecker = require('seo-checker');
+
+seoChecker.run('index.html', [
+  {
+    tag: 'img',
+    all: {
+      src: '*'
+    }
+  },
+  'output.txt'
+]);
+```
+
+### Explanation
+
+`seoChecker.run` takes three parameters `input`, `rules` and `output`
+
+- **input** _[string | node readable stream]_ - the input html file path or stream
+- **rules** _[array]_- the rules to be validated (optinal). If undefined, default rules will be used
+- **output** _[string]_ - the output file path (optional)
+
+## Rules
+
+> Rule 1: All
+
+Example: All \<a\> have `href` attribute
+
+```js
+  {
+    tag: 'a',
+    all: {
+      href: '*'
+    }
+  }
+```
+
+> Rule 2 Contain
+
+Example: There exists \<meta `name`="`description`">
+
+```js
+  {
+    tag: 'meta',
+    contain: {
+      name: 'description'
+    }
+  }
+```
+
+> Rule 3 Limit
+
+Example: \<strong\> appears at least 1, but no more than 3 times
+
+```js
+  {
+    tag: 'strong',
+    limit: {
+      min: 1,
+      max: 3,
+    }
+  }
+```
+
+### Customize Rule
+
+Example: check if \<meta `name`="`robots`"\> exisit
+
+```js
+# add below code to .seorc.js
+{
+  tag: 'meta',
+  contain: {
+    name: 'robots'
+  }
+}
 ```
 
 ## Test
@@ -21,14 +115,12 @@ A simple Node.js package to let a user use this package to scan a HTML file and 
 ## Build
 
 ```bash
-  #  for development
+  #  for developmen with source map enabled
   yarn dev
 
-  #  for production
+  #  for production uglification and minification
   yarn prod
 ```
-
-## Usage
 
 ## Authors
 
