@@ -8,12 +8,21 @@
     "build": "yarn test && webpack --mode production",
     "test": "mocha test/*.js --compilers js:babel-core/register"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/luisliuchao/seo-simple-checker.git"
+  },
   "keywords": [
     "seo",
-    "checker"
+    "checker",
+    "html"
   ],
   "author": "Liu Chao",
-  "license": "ISC",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/luisliuchao/seo-simple-checker/issues"
+  },
+  "homepage": "https://github.com/luisliuchao/seo-simple-checker",
   "devDependencies": {
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.4",

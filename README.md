@@ -1,4 +1,4 @@
-# SEO Checker
+# SEO Simple Checker
 
 A simple Node.js package to let a user use this package to scan a HTML file and show all of the SEO defects. [What is SEO?](https://moz.com/learn/seo/what-is-seo)
 
