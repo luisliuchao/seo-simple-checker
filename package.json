@@ -1,6 +1,6 @@
 {
   "name": "seo-simple-checker",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Simple HTML SEO rules checker",
   "main": "index.js",
   "scripts": {
