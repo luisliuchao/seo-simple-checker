@@ -124,10 +124,13 @@ class RuleLimit {
     }
   }
 }
+
+const defaultRuleHandlers = [RuleAll, RuleContain, RuleLimit];
+
 class RuleResolver {
   constructor(rule, ruleHandlers) {
     this.rule = rule;
-    const allRuleHandlers = ruleHandlers || [RuleAll, RuleContain, RuleLimit];
+    const allRuleHandlers = ruleHandlers || defaultRuleHandlers;
     this.matchedRuleHandlers = allRuleHandlers.filter(handler => handler.match(this.rule));
   }
 
@@ -243,6 +246,7 @@ const SEOChecker = (() => {
 
   return {
     run,
+    defaultRules,
   };
 })();
 

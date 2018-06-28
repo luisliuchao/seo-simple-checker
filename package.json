@@ -5,11 +5,10 @@
   "main": "index.js",
   "scripts": {
     "dev": "yarn test && webpack --mode development",
-    "prod": "yarn test && webpack --mode production",
+    "build": "yarn test && webpack --mode production",
     "test": "mocha test/*.js --compilers js:babel-core/register"
   },
   "keywords": [
-    "seo",
     "seo",
     "checker"
   ],

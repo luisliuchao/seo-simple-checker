@@ -119,7 +119,7 @@ Example: check if \<meta `name`="`robots`"\> exisit
   yarn dev
 
   #  for production uglification and minification
-  yarn prod
+  yarn build
 ```
 
 ## Authors
